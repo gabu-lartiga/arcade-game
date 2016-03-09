@@ -3,16 +3,16 @@ var Enemy = function(_x,_y,_w,_h,_speed) {
     this.x = _x;
     this.y = _y;
     this.width = _w;
-    this.height = _h;
+    this.height = _h+25;
     this.speed = _speed;
     this.collisionBox = {
-        radius: (this.width/2),
+        radius: (this.width/3),
         x: (this.x+(this.width/2)),
-        y: (this.y+(this.height/2)) }; //collision Box (circle lol)
+        y: (this.y+((this.height)/1.8)) }; //collision Box (circle lol)
     this.sprite = 'images/enemy-bug.png';
 };
 Enemy.prototype.attachCollisionBox = function(_x){
-    this.collisionBox.x = _x;
+    this.collisionBox.x = _x+(this.width/2);
 };
 Enemy.prototype.update = function(dt) {
     this.x = this.x + this.speed*dt;
@@ -32,11 +32,12 @@ var Player = function(_x, _y, _w, _h){ // Player constructor
     this.x = _x;
     this.y = _y;
     this.width = _w;
-    this.height = _h;
-    this.collisionBox = {
-    radius: (this.width/2),
-    x: (this.x+(this.width/2)),
-    y: (this.y+(this.height/2)) }; //collision Box (circle lol)
+    this.height = _h+25;
+    this.collisionBox = { //collision Box (circle lol)
+        radius: (this.width/4.5),
+        x: (this.x+((this.width)/2)),
+        y: (this.y+(this.height/1.75))
+    };
     this.sprite = 'images/char-boy.png';
 };
 
@@ -45,7 +46,10 @@ var iniPos = {
     x : (101*2),
     y : (75*5)
 };
-
+Player.prototype.attachCollisionBox = function(_x, _y){
+    this.collisionBox.x = _x+(this.width/2);
+    this.collisionBox.y = _y+(this.height/1.75);
+};
 Player.prototype.update = function(dt){
     //if player "collides" with water
     if(this.y<=0){
@@ -57,6 +61,7 @@ Player.prototype.update = function(dt){
             }
             , 1000);
     };
+    this.attachCollisionBox(this.x,this.y);
 };
 Player.prototype.render = function(){
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
@@ -85,7 +90,7 @@ Player.prototype.handleInput = function(key){
     };
 };
 
-var ey = [58, 141, 224]; // y-axis enemies spawn positions
+var ey = [58, 141, 224]; // y-axis enemies spawn positions (-25 ~ 0y-axis)
 var allEnemies = [];
 var enemyCreation = setInterval(createEnemy,1000);
 function createEnemy(){
