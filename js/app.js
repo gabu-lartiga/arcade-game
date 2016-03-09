@@ -74,7 +74,7 @@ function createEnemy(){
     allEnemies.push(new Enemy(-101, ey[indy], randSpeed));
 };
 function checkCollisions(){ //they are actually circles not boxes but collision Box is the standard name
-                            //
+                            // https://developer.mozilla.org/en-US/docs/Games/Techniques/2D_collision_detection
     //for Each enemy check dx dy
     // var dx = player.cCircle.x - allEnemies[].cCircle.x;
     // var dy = player.cCircle.y - allEnemies[].cCircle.y;
