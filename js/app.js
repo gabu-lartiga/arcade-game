@@ -3,8 +3,7 @@ var Enemy = function(_x,_y,_speed) {
     this.x = _x;
     this.y = _y;
     this.speed = _speed;
-    // this.cCircle = {radius:(this.width/2), x:(this.x+(this.width/2)), y:(this.y+(this.height/2))}; //collision Box (circle lol)
-    // this.isColliding = false;
+    this.colliderBox = {radius:(this.width/2), x:(this.x+(this.width/2)), y:(this.y+(this.height/2))}; //collision Box (circle lol)
     this.sprite = 'images/enemy-bug.png';
 };
 Enemy.prototype.update = function(dt) {
@@ -21,8 +20,7 @@ Enemy.prototype.render = function() {
 var Player = function(_x, _y){ // Player constructor
     this.x = _x;
     this.y = _y;
-    // this.cCircle = {radius:(this.width/2), x:(this.x+(this.width/2)), y:(this.y+(this.height/2))}; //collision Box (circle lol)
-    // this.isColliding = false;
+    this.colliderBox = {radius:(this.width/2), x:(this.x+(this.width/2)), y:(this.y+(this.height/2))}; //collision Box (circle lol)
     this.sprite = 'images/char-boy.png';
 };
 
