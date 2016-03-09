@@ -17,14 +17,13 @@ Enemy.prototype.attachCollisionBox = function(_x){
 Enemy.prototype.update = function(dt) {
     this.x = this.x + this.speed*dt;
     this.attachCollisionBox(this.x);
-    //TODO: if collides then desapear
 };
 
 Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-    ctx.beginPath();
-    ctx.arc(this.collisionBox.x, this.collisionBox.y, this.collisionBox.radius,0,2*Math.PI);
-    ctx.stroke();
+    // ctx.beginPath();
+    // ctx.arc(this.collisionBox.x, this.collisionBox.y, this.collisionBox.radius,0,2*Math.PI);
+    // ctx.stroke();
 };
 
 //Player Constructor
@@ -62,12 +61,13 @@ Player.prototype.update = function(dt){
             , 1000);
     };
     this.attachCollisionBox(this.x,this.y);
+    checkCollisions(allEnemies, player);
 };
 Player.prototype.render = function(){
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-    ctx.beginPath();
-    ctx.arc(this.collisionBox.x, this.collisionBox.y, this.collisionBox.radius,0,2*Math.PI);
-    ctx.stroke();
+    // ctx.beginPath();
+    // ctx.arc(this.collisionBox.x, this.collisionBox.y, this.collisionBox.radius,0,2*Math.PI);
+    // ctx.stroke();
 };
 
 Player.prototype.handleInput = function(key){
@@ -96,25 +96,26 @@ var enemyCreation = setInterval(createEnemy,1000);
 function createEnemy(){
     var indy = Math.floor((Math.random()*3)); //random y-axis spawn position
     var randSpeed = Math.floor((Math.random()*250)+150);
-    allEnemies.push(new Enemy(-101, ey[indy], 101, 173, randSpeed));
+    var enemy = new Enemy(-101, ey[indy], 101, 173, randSpeed);
+    allEnemies.push(enemy);
 };
 
-// function checkCollisions(){  //they are actually circles not boxes but collision Box is the standard
-                                // https://developer.mozilla.org/en-US/docs/Games/Techniques/2D_collision_detection
-    //for Each enemy check dx dy
-    // var dx = player.cCircle.x - allEnemies[].cCircle.x;
-    // var dy = player.cCircle.y - allEnemies[].cCircle.y;
-    // var distance = Math.sqrt(dx * dx + dy * dy);
+function checkCollisions(enemies, player){  //they are actually circles not boxes but collision Box is the standard
 
-    // var answer = null;
+    for(var i=0; i < enemies.length; i++){
+        var enemy = enemies[i];
+        var dx = player.collisionBox.x - enemy.collisionBox.x;
+        var dy = player.collisionBox.y - enemy.collisionBox.y;
+        var distance = Math.sqrt(dx * dx + dy * dy);
+        if (distance < player.collisionBox.radius + enemy.collisionBox.radius) {
+            enemies.splice(i, 1);
+            player.x=iniPos.x;
+            player.y=iniPos.y;
+        };
+    };
+};
 
-    // if (distance < player.cCircle.radius + allEnemies[].cCircle.radius) {
-    //     answer = true;
-    // } else false;
-    // return answer;
-// };
-
-//TODO: delete unused(out of canvas) enemies
+//TODO: delete unused(out of canvas) enemies D:!!!
 
 
 var player = new Player(iniPos.x, iniPos.y,101,173);
