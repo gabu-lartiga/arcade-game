@@ -1,9 +1,14 @@
 // Enemies our player must avoid
-var Enemy = function(_x,_y,_speed) {
+var Enemy = function(_x,_y,_w,_h,_speed) {
     this.x = _x;
     this.y = _y;
+    this.width = _w;
+    this.height = _h;
     this.speed = _speed;
-    this.colliderBox = {radius:(this.width/2), x:(this.x+(this.width/2)), y:(this.y+(this.height/2))}; //collision Box (circle lol)
+    this.collisionBox = {
+        radius: (this.width/2),
+        x: (this.x+(this.width/2)),
+        y: (this.y+(this.height/2)) }; //collision Box (circle lol)
     this.sprite = 'images/enemy-bug.png';
 };
 Enemy.prototype.update = function(dt) {
@@ -17,10 +22,15 @@ Enemy.prototype.render = function() {
 };
 
 //Player Constructor
-var Player = function(_x, _y){ // Player constructor
+var Player = function(_x, _y, _w, _h){ // Player constructor
     this.x = _x;
     this.y = _y;
-    this.colliderBox = {radius:(this.width/2), x:(this.x+(this.width/2)), y:(this.y+(this.height/2))}; //collision Box (circle lol)
+    this.width = _w;
+    this.height = _h;
+    this.collisionBox = {
+    radius: (this.width/2),
+    x: (this.x+(this.width/2)),
+    y: (this.y+(this.height/2)) }; //collision Box (circle lol)
     this.sprite = 'images/char-boy.png';
 };
 
@@ -73,7 +83,7 @@ var enemyCreation = setInterval(createEnemy,1000);
 function createEnemy(){
     var indy = Math.floor((Math.random()*3)); //random y-axis spawn position
     var randSpeed = Math.floor((Math.random()*250)+150);
-    allEnemies.push(new Enemy(-101, ey[indy], randSpeed));
+    allEnemies.push(new Enemy(-101, ey[indy], 83, 83, randSpeed));
 };
 
 // function checkCollisions(){  //they are actually circles not boxes but collision Box is the standard
@@ -94,7 +104,7 @@ function createEnemy(){
 //TODO: delete unused(out of canvas) enemies
 
 
-var player = new Player(iniPos.x, iniPos.y);
+var player = new Player(iniPos.x, iniPos.y,83,83);
 
 // This listens for key presses and sends the keys to Player.handleInput() method
 document.addEventListener('keyup', function(e) {
