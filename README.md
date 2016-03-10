@@ -1,11 +1,12 @@
 #Frontend nanodegree Arcade game
 
 ###How to Run
-Open _index.html_ into your browser
+Open `index.html` using your browser
 
 ###How to play
-**Controls**
+####Controls
 Use :arrow_left: :arrow_up: :arrow_down: :arrow_right: to move the player
-**Objectives**
+####Objectives
 - Cross the street to reach the water
-- Avoid bugs
+- You win when you touch the water
+- Avoid touuching bugs in the street. If you touch a bug you have to start again.
