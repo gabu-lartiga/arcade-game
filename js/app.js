@@ -37,15 +37,41 @@ var Enemy = function(x, y, w, h, speed) {
 Enemy.prototype.update = function(dt) {
     this.x = this.x + this.speed * dt;
     this.attachCollisionBox(this.x);
-    checkCollisions(allEnemies, player);
-    deleteEnemy(allEnemies); // the array never will be so big, then the loop will never take too much time
+    this.deleteAll(allEnemies); // the array never will be so big, then the loop will never take too much time
 };
 Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-    // drawCollisionBox(this);
+    // this.drawCollisionBox();
 };
 Enemy.prototype.attachCollisionBox = function(x) {
     this.collisionBox.x = x + (this.width / 2);
+};
+Enemy.prototype.drawCollisionBox = function() {
+    ctx.beginPath();
+    ctx.arc(this.collisionBox.x, this.collisionBox.y, this.collisionBox.radius, 0, 2 * Math.PI);
+    ctx.stroke();
+};
+/**
+ * @description Instantiate Enemy in a random position with random speed and add it to allEnemies array
+ */
+Enemy.prototype.create = function() {
+    var indy = Math.floor((Math.random() * 3)); //random y-axis spawn position
+    var randSpeed = Math.floor((Math.random() * 250) + 150);
+    var enemy = new Enemy(-101, ey[indy], 101, 173, randSpeed);
+    allEnemies.push(enemy);
+};
+/**
+ * @description Delete all the enemies that are outside of the canvas
+ * @param {array} enemies - All the enemies in the canvas
+ */
+Enemy.prototype.deleteAll = function(enemies) {
+    var enemy;
+    for (var i = 0; i < enemies.length; i++) {
+        enemy = enemies[i];
+        if (enemy.x > 550) {
+            enemies.splice(i, 1);
+        }
+    }
 };
 
 /**
@@ -82,13 +108,14 @@ Player.prototype.update = function(dt) {
         this.win = false;
     }
     this.attachCollisionBox(this.x, this.y);
+    this.checkCollisions(allEnemies);
 };
 Player.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
     if (this.win) {
-        win();
+        this.displayWinText();
     }
-    // drawCollisionBox(this);
+    // this.drawCollisionBox();
 };
 Player.prototype.handleInput = function(key) {
     if (this.x >= 101 && key === 'left') { // Sanity check
@@ -112,67 +139,37 @@ Player.prototype.reset = function() {
     this.x = iniPos.x;
     this.y = iniPos.y;
 };
-var player = new Player(iniPos.x, iniPos.y, 101, 173); //Player instantiation
-
-var allEnemies = [];
-var enemySpawn = 1000; //time to spawn an enemy: 1sec
-
-//New Enemy instantiation every 1 sec
-window.setInterval(createEnemy, enemySpawn);
-/**
- * @description Instantiate Enemy in a random position with random speed and add it to allEnemies array
- */
-function createEnemy() {
-    var indy = Math.floor((Math.random() * 3)); //random y-axis spawn position
-    var randSpeed = Math.floor((Math.random() * 250) + 150);
-    var enemy = new Enemy(-101, ey[indy], 101, 173, randSpeed);
-    allEnemies.push(enemy);
-}
-/**
- * @description Delete all the enemies that are outside of the canvas
- * @param {array} enemies - All the enemies in the canvas
- */
-function deleteEnemy(enemies) {
-    var enemy;
-    for (var i = 0; i < enemies.length; i++) {
-        enemy = enemies[i];
-        if (enemy.x > 550) {
-            enemies.splice(i, 1);
-        }
-    }
-}
-/**
- * @description Draws the collision box of an object
- * @param {object} obj - An object that has collisionBox to draw
- */
-function drawCollisionBox(obj) {
-    ctx.beginPath();
-    ctx.arc(obj.collisionBox.x, obj.collisionBox.y, obj.collisionBox.radius, 0, 2 * Math.PI);
-    ctx.stroke();
-}
-
 /**
  * @description Check for collisions using Circle Collision detection
  * @param {array} enemies - All the enemies in the canvas
  * @param {object} player - The player instance
  */
-function checkCollisions(enemies, player) { //they are actually circles not boxes, but collisionBox is the standard name
+Player.prototype.checkCollisions = function(enemies) { //they are actually circles not boxes, but collisionBox is the standard name
     for (var i = 0; i < enemies.length; i++) {
         var enemy = enemies[i];
-        var dx = player.collisionBox.x - enemy.collisionBox.x;
-        var dy = player.collisionBox.y - enemy.collisionBox.y;
+        var dx = this.collisionBox.x - enemy.collisionBox.x;
+        var dy = this.collisionBox.y - enemy.collisionBox.y;
         var distance = Math.sqrt(dx * dx + dy * dy);
-        if (distance < player.collisionBox.radius + enemy.collisionBox.radius) {
+        if (distance < this.collisionBox.radius + enemy.collisionBox.radius) {
             enemies.splice(i, 1);
-            player.reset();
-            player.win = false;
+            this.reset();
+            this.win = false;
         }
     }
-}
+};
+/**
+ * @description Draws the collision box of an object
+ * @param {object} obj - An object that has collisionBox to draw
+ */
+Player.prototype.drawCollisionBox = function() {
+    ctx.beginPath();
+    ctx.arc(this.collisionBox.x, this.collisionBox.y, this.collisionBox.radius, 0, 2 * Math.PI);
+    ctx.stroke();
+};
 /**
  * @description Set and write win text
  */
-function win() {
+Player.prototype.displayWinText = function() {
     ctx.font = '36pt Impact';
     ctx.textAlign = 'center';
     ctx.fillStyle = 'white';
@@ -180,7 +177,16 @@ function win() {
     ctx.lineWidth = 3;
     ctx.fillText('Winner!', canvasSize.width / 2, canvasSize.height / 2);
     ctx.strokeText('Winner!', canvasSize.width / 2, canvasSize.height / 2);
-}
+};
+var player = new Player(iniPos.x, iniPos.y, 101, 173); //Player instantiation
+
+var allEnemies = [];
+var enemySpawn = 1000; //time to spawn an enemy: 1sec
+
+//New Enemy instantiation every 1 sec
+window.setInterval(function(){
+    var enemy = new Enemy();
+    enemy.create();}, enemySpawn);
 
 // This listens for key presses and sends the keys to Player.handleInput() method
 document.addEventListener('keyup', function(e) {
