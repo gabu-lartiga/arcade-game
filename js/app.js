@@ -185,7 +185,6 @@ Player.prototype.displayWinText = function() { // Set and write win text
     ctx.fillText('Winner!', canvasSize.width / 2, canvasSize.height / 2);
     ctx.strokeText('Winner!', canvasSize.width / 2, canvasSize.height / 2);
 };
-console.log(Player.prototype);
 var player = new Player(iniPos.x, iniPos.y, 101, 173); //Player instantiation
 var allEnemies = [];
 var enemySpawn = 1000; //time to spawn an enemy: 1sec
