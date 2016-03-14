@@ -65,18 +65,16 @@ var Enemy = function(x, y, width, height, speed) {
 };
 Enemy.prototype = Object.create(Character.prototype);
 Enemy.prototype.constructor = Enemy;
-
 Enemy.prototype = {
     update: function(dt) { //@override
         this.x = this.x + this.speed * dt;
-        console.log(this)
         this.attachCollisionBox(this.x);
         this.deleteAll(allEnemies); // the array never will be so big, then the loop will never take too much time
     },
     /**
     * @description Instantiate Enemy in a random position with random speed and add it to allEnemies array
     */
-    create: function() {
+    createEnemy: function() {
         var indy = Math.floor((Math.random() * 3)); //random y-axis spawn position
         var randSpeed = Math.floor((Math.random() * 250) + 150);
         var enemy = new Enemy(-101, ey[indy], 101, 173, randSpeed);
@@ -96,7 +94,8 @@ Enemy.prototype = {
         }
     }
 };
-console.log(typeof Enemy.prototype);
+console.log("Enemy.prototype");
+console.log(Enemy.prototype);
 /**
  * @description Creates a new player
  * @constructor
@@ -193,17 +192,18 @@ Player.prototype = {
         ctx.strokeText('Winner!', canvasSize.width / 2, canvasSize.height / 2);
     }
 };
+console.log("Player.prototype");
+console.log(Player.prototype);
 
 var player = new Player(iniPos.x, iniPos.y, 101, 173); //Player instantiation
-
 var allEnemies = [];
 var enemySpawn = 1000; //time to spawn an enemy: 1sec
 
 //New Enemy instantiation every 1 sec
-window.setInterval(function(){
-    var enemy = new Enemy(-1000,-1000,0,0,0);
-    enemy.create();
-}, enemySpawn);
+window.setInterval( function(){
+                        var enemy = new Enemy(-1000,-1000,0,0,0);
+                        enemy.createEnemy();
+                    }, enemySpawn);
 
 // This listens for key presses and sends the keys to Player.handleInput() method
 document.addEventListener('keyup', function(e) {
