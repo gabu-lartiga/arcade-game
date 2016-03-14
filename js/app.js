@@ -65,37 +65,35 @@ var Enemy = function(x, y, width, height, speed) {
 };
 Enemy.prototype = Object.create(Character.prototype);
 Enemy.prototype.constructor = Enemy;
-Enemy.prototype = {
-    update: function(dt) { //@override
-        this.x = this.x + this.speed * dt;
-        this.attachCollisionBox(this.x);
-        this.deleteAll(allEnemies); // the array never will be so big, then the loop will never take too much time
-    },
-    /**
-    * @description Instantiate Enemy in a random position with random speed and add it to allEnemies array
-    */
-    createEnemy: function() {
-        var indy = Math.floor((Math.random() * 3)); //random y-axis spawn position
-        var randSpeed = Math.floor((Math.random() * 250) + 150);
-        var enemy = new Enemy(-101, ey[indy], 101, 173, randSpeed);
-        allEnemies.push(enemy);
-    },
-    /**
-     * @description Delete all the enemies that are outside of the canvas
-     * @param {array} enemies - All the enemies in the canvas
-     */
-    deleteAll: function(enemies) {
-        var enemy;
-        for (var i = 0; i < enemies.length; i++) {
-            enemy = enemies[i];
-            if (enemy.x > 550) {
-                enemies.splice(i, 1);
-            }
+Enemy.prototype.update = function(dt) { //@override
+    this.x = this.x + this.speed * dt;
+    this.attachCollisionBox(this.x);
+    this.deleteAll(allEnemies); // the array never will be so big, then the loop will never take too much time
+};
+/**
+* @description Instantiate an Enemy in a random position with random speed
+*              and add it to allEnemies array
+*/
+Enemy.prototype.createEnemy = function() {
+    var indy = Math.floor((Math.random() * 3)); //random y-axis spawn position
+    var randSpeed = Math.floor((Math.random() * 250) + 150);
+    var enemy = new Enemy(-101, ey[indy], 101, 173, randSpeed);
+    allEnemies.push(enemy);
+};
+/**
+ * @description Delete all the enemies that are outside of the canvas
+ * @param {array} enemies - All the enemies in the canvas
+ */
+Enemy.prototype.deleteAll= function(enemies) {
+    var enemy;
+    for (var i = 0; i < enemies.length; i++) {
+        enemy = enemies[i];
+        if (enemy.x > 550) {
+            enemies.splice(i, 1);
         }
     }
 };
-console.log("Enemy.prototype");
-console.log(Enemy.prototype);
+
 /**
  * @description Creates a new player
  * @constructor
@@ -116,85 +114,78 @@ var Player = function(x, y, width, height) {
 };
 Player.prototype = Object.create(Character.prototype);
 Player.prototype.constructor = Player;
-Player.prototype = {
-    update: function(dt) { //@override
-        //if player 'collides' with water
-        if (this.y <= 0) {
-            this.win = true;
-            allEnemies.splice(0, allEnemies.length);
-            window.setTimeout(function( ) {
-                this.reset();
-            }.bind(this), 1000);
+Player.prototype.update = function(dt) { //@override
+    //if player 'collides' with water
+    if (this.y <= 0) {
+        this.win = true;
+        allEnemies.splice(0, allEnemies.length);
+        window.setTimeout(function( ) {
+            this.reset();
+        }.bind(this), 1000);
 
-        } else { // if player is out of water the game start again
-            this.win = false;
-        }
-        this.attachCollisionBox(this.x, this.y);
-        this.checkCollisions(allEnemies);
-    },
-    render: function() { //@override
-        ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-        if (this.win) {
-            this.displayWinText();
-        }
-        this.drawCollisionBox; //THROW AN ERROR
-    },
-    attachCollisionBox: function(x, y) { //@override
-        this.collisionBox.x = x + (this.width / 2);
-        this.collisionBox.y = y + (this.height / 1.75);
-    },
-    handleInput: function(key) {
-        if (this.x >= 101 && key === 'left') { // Sanity check
-            this.x = this.x - 101; // move Left
-        }
-        if (this.x <= 303 && key === 'right') {
-            this.x = this.x + 101; // move Right
-        }
-        if (this.y > 0 && key === 'up') {
-            this.y = this.y - 83; // move Up
-        }
-        if (this.y < 375 && key === 'down') {
-            this.y = this.y + 83; // move Down
-        }
-    },
-    reset: function() {
-        this.x = iniPos.x;
-        this.y = iniPos.y;
-    },
-    /**
-     * @description Check for collisions using Circle Collision detection
-     * @param {array} enemies - All the enemies in the canvas
-     * @param {object} player - The player instance
-     */
-    checkCollisions: function(enemies) { //they are actually circles not boxes, but collisionBox is the standard name
-        for (var i = 0; i < enemies.length; i++) {
-            var enemy = enemies[i];
-            var dx = this.collisionBox.x - enemy.collisionBox.x;
-            var dy = this.collisionBox.y - enemy.collisionBox.y;
-            var distance = Math.sqrt(dx * dx + dy * dy);
-            if (distance < this.collisionBox.radius + enemy.collisionBox.radius) {
-                enemies.splice(i, 1);
-                this.reset();
-                this.win = false;
-            }
-        }
-    },
-    /**
-     * @description Set and write win text
-     */
-    displayWinText: function() {
-        ctx.font = '36pt Impact';
-        ctx.textAlign = 'center';
-        ctx.fillStyle = 'white';
-        ctx.strokeStyle = 'black';
-        ctx.lineWidth = 3;
-        ctx.fillText('Winner!', canvasSize.width / 2, canvasSize.height / 2);
-        ctx.strokeText('Winner!', canvasSize.width / 2, canvasSize.height / 2);
+    } else { // if player is out of water the game start again
+        this.win = false;
+    }
+    this.attachCollisionBox(this.x, this.y);
+    this.checkCollisions(allEnemies);
+};
+Player.prototype.render = function() { //@override
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+    if (this.win) {
+        this.displayWinText();
+    }
+    //this.drawCollisionBox();
+};
+Player.prototype.attachCollisionBox = function(x, y) { //@override
+    this.collisionBox.x = x + (this.width / 2);
+    this.collisionBox.y = y + (this.height / 1.75);
+};
+Player.prototype.handleInput = function(key) {
+    if (this.x >= 101 && key === 'left') { // Sanity check
+        this.x = this.x - 101; // move Left
+    }
+    if (this.x <= 303 && key === 'right') {
+        this.x = this.x + 101; // move Right
+    }
+    if (this.y > 0 && key === 'up') {
+        this.y = this.y - 83; // move Up
+    }
+    if (this.y < 375 && key === 'down') {
+        this.y = this.y + 83; // move Down
     }
 };
-console.log("Player.prototype");
+Player.prototype.reset = function() {
+    this.x = iniPos.x;
+    this.y = iniPos.y;
+};
+/**
+ * @description Check for collisions using Circle Collision detection
+ * @param {array} enemies - All the enemies in the canvas
+ * @param {object} player - The player instance
+ */
+Player.prototype.checkCollisions = function(enemies) { //they are actually circles not boxes, but collisionBox is the standard name
+    for (var i = 0; i < enemies.length; i++) {
+        var enemy = enemies[i];
+        var dx = this.collisionBox.x - enemy.collisionBox.x;
+        var dy = this.collisionBox.y - enemy.collisionBox.y;
+        var distance = Math.sqrt(dx * dx + dy * dy);
+        if (distance < this.collisionBox.radius + enemy.collisionBox.radius) {
+            enemies.splice(i, 1);
+            this.reset();
+            this.win = false;
+        }
+    }
+};
+Player.prototype.displayWinText = function() { // Set and write win text
+    ctx.font = '36pt Impact';
+    ctx.textAlign = 'center';
+    ctx.fillStyle = 'white';
+    ctx.strokeStyle = 'black';
+    ctx.lineWidth = 3;
+    ctx.fillText('Winner!', canvasSize.width / 2, canvasSize.height / 2);
+    ctx.strokeText('Winner!', canvasSize.width / 2, canvasSize.height / 2);
+};
 console.log(Player.prototype);
-
 var player = new Player(iniPos.x, iniPos.y, 101, 173); //Player instantiation
 var allEnemies = [];
 var enemySpawn = 1000; //time to spawn an enemy: 1sec
