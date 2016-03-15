@@ -118,7 +118,7 @@ Player.prototype.update = function(dt) { //@override
     //if player 'collides' with water
     if (this.y <= 0) {
         this.win = true;
-        allEnemies.splice(0, allEnemies.length);
+        allEnemies = [];
         window.setTimeout(function( ) {
             this.reset();
         }.bind(this), 1000);
