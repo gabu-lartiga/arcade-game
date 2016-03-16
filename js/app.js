@@ -13,7 +13,7 @@ var canvasSize = {
 }; // canvas size
 var ey = [58, 141, 224]; // y-axis enemies spawn positions
 var score = 0;
-var Character = function(x, y , width, height){
+var Character = function(x, y, width, height) {
     this.x = x;
     this.y = y;
     this.width = width;
@@ -27,7 +27,7 @@ var Character = function(x, y , width, height){
 };
 Character.prototype = {
     constructor: Character,
-    update:function(dt){},
+    update: function(dt) {},
     render: function() {
         ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
     },
@@ -71,9 +71,9 @@ Enemy.prototype.update = function(dt) { //@override
     this.deleteAll(allEnemies); // the array never will be so big, then the loop will never take too much time
 };
 /**
-* @description Instantiate an Enemy in a random position with random speed
-*              and add it to allEnemies array
-*/
+ * @description Instantiate an Enemy in a random position with random speed
+ *              and add it to allEnemies array
+ */
 Enemy.prototype.createEnemy = function() {
     var indy = Math.floor((Math.random() * 3)); //random y-axis spawn position
     var randSpeed = Math.floor((Math.random() * 250) + 150);
@@ -84,7 +84,7 @@ Enemy.prototype.createEnemy = function() {
  * @description Delete all the enemies that are outside of the canvas
  * @param {array} enemies - All the enemies in the canvas
  */
-Enemy.prototype.deleteAll= function(enemies) {
+Enemy.prototype.deleteAll = function(enemies) {
     var enemy;
     for (var i = 0; i < enemies.length; i++) {
         enemy = enemies[i];
@@ -119,7 +119,7 @@ Player.prototype.update = function(dt) { //@override
     if (this.y <= 0) {
         this.win = true;
         allEnemies = [];
-        window.setTimeout(function( ) {
+        window.setTimeout(function() {
             this.reset();
         }.bind(this), 1000);
 
@@ -190,10 +190,10 @@ var allEnemies = [];
 var enemySpawn = 1000; //time to spawn an enemy: 1sec
 
 //New Enemy instantiation every 1 sec
-window.setInterval( function(){
-                        var enemy = new Enemy(-1000,-1000,0,0,0);
-                        enemy.createEnemy();
-                    }, enemySpawn);
+window.setInterval(function() {
+    var enemy = new Enemy(-1000, -1000, 0, 0, 0);
+    enemy.createEnemy();
+}, enemySpawn);
 
 // This listens for key presses and sends the keys to Player.handleInput() method
 document.addEventListener('keyup', function(e) {
